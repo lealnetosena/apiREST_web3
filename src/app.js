@@ -7,6 +7,13 @@ const { PORT } = require("dotenv").config().parsed;
 const app = express();
 //console.log(app);
 
+// Middleware
+app.use(express.json())
+
+// const bodyParser = require("body-parser")
+// app.use(bodyParser.json())
+
+
 // Mapeamento das Rotas
 require("../routes/users")(app);
 
