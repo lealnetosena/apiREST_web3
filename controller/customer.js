@@ -1,46 +1,44 @@
 const db = require("../infra/connection");
-console.log(db);
+const Customer = require("../dao/customer");
+console.log(Customer)
 
 exports.createOne = (req, res) => {
 
-  const {id, name, email, birthday, cpf, typeAccount} = req.body
-  const sql = `INSERT INTO customer (
-                id, name, email, birthday, cpf, typeAccount
-              ) 
-              values ('${id}', '${name}', '${email}', '${birthday}', '${cpf}', '${typeAccount}')`
-  db.run(sql, function (err) {
-    if(err) {
-      res.status(400).send({err})
+  Customer.create(req.body, function (err) {
+    if (err) {
+      res.status(400).send({ err });
     } else {
-      res.status(201).send("criado")
+      res.status(201).send("criado");
     }
-  })
+  });
+  
 };
 exports.getAll = (req, res) => {
-  const sql = "SELECT * FROM customer";
-  db.all(sql, (err, data) => res.send(data));
+  Customer.findAll((err, data) => res.send(data));
 };
 exports.getOne = (req, res) => {
-  console.log(req.params);
-  const { id } = req.params;
-  const sql = `SELECT * FROM customer where id = '${id}'`;
-  console.log(sql);
-  db.get(sql, (err, data) => {
+  Customer.findOne(req.params.id, (err, data) => {
     if (!data) {
       res.status(404).send({ err: "customer not found"});
     }
     res.status(201).send(data);
+  })
+
+};
+exports.changeOne = (req, res) => {
+  Customer.updatePartial(req.params.id, req.body, (err) => {
+    if (err) {
+        console.log(err)
+      res.status(400).send({ msg: err });
+    } else {
+      res.status(204).end();
+    }
   });
 };
-exports.changeOne = (req, res) => res.send("CHANGE ONE");
 exports.removeOne = (req, res) => {
-  const { id } = req.params;
-
-  const sql = `DELETE FROM customer WHERE id = '${id}'`
-
-  db.run(sql, (err) => {
-    if(!err) {res.status(204).end()} else{ res.send(err) }
-  })
+Customer.delete(req.params.id, (err) => {
+  if(!err) {res.status(204).end()} else{ res.send(err) }
+})
 };
 
 //alternativa de implantação

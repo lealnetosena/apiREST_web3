@@ -14,7 +14,7 @@ router.get("/", customerController.getAll );
 router.get("/:id", customerController.getOne);
 
 // Atualiza um Cliente
-router.put("/:id", customerController.changeOne );
+router.patch("/:id", customerController.changeOne );
 
 // Remover um Cliente
 router.delete("/:id",customerController.removeOne );
